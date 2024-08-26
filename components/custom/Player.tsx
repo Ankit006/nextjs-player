@@ -4,6 +4,7 @@ import { useSongStatusContext } from "@/context/CurrentSongStatus";
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import ProgessBar from "./ProgessBar";
+import Image from "next/image";
 
 export default function Player() {
     const { currentSong, setCurrentSong } = useCurrentSongContext();
@@ -97,9 +98,12 @@ export default function Player() {
             {currentSong && (
                 <div className="fixed bottom-0 w-full bg-black py-8 px-12 ">
                     <audio ref={audioRef} hidden />
-                    <div className="absolute">
-                        <p className="font-semibold text-green-500">{currentSong.name}</p>
-                        <p className="text-sm font-light">{currentSong.artist}</p>
+                    <div className="absolute flex items-center space-x-2">
+                        <Image src={URL.createObjectURL(currentSong.poster)} alt={currentSong.name} width={50} height={50} className="w-[50px] h-[50px] object-cover" />
+                        <div>
+                            <p className="font-semibold text-green-500">{currentSong.name}</p>
+                            <p className="text-sm font-light">{currentSong.artist}</p>
+                        </div>
                     </div>
                     <div className="flex justify-center flex-col items-center space-y-3">
                         <div className="flex items-center space-x-4">
