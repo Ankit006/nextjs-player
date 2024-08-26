@@ -2,9 +2,9 @@ import { useAudioContext } from "@/context/audioListContext";
 import { useCurrentSongContext } from "@/context/CurrentSongContext";
 import { useSongStatusContext } from "@/context/CurrentSongStatus";
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
 import ProgessBar from "./ProgessBar";
-import Image from "next/image";
 
 export default function Player() {
     const { currentSong, setCurrentSong } = useCurrentSongContext();
@@ -124,7 +124,7 @@ export default function Player() {
                             </button>
                         </div>
                         <div className="w-96">
-                            <ProgessBar audioRef={audioRef} />
+                            <ProgessBar audioRef={audioRef} duration={currentSong.duration} />
                         </div>
                     </div>
                 </div>

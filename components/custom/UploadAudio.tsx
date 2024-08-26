@@ -31,7 +31,6 @@ export default function UploadAudio() {
         let duration = "";
 
         if (audio instanceof File && audio.size > 0 && isAudio(audio.type)) {
-            console.log(audio.type)
             duration = await getAudioLength(audio);
         }
         form.set("duration", duration);

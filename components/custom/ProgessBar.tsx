@@ -1,8 +1,9 @@
+import { formatTime } from '@/lib/utils';
 import React, { RefObject, useCallback, useEffect, useState } from 'react'
 
-export default function ProgessBar({ audioRef }: { audioRef: RefObject<HTMLAudioElement> }) {
+export default function ProgessBar({ audioRef, duration }: { audioRef: RefObject<HTMLAudioElement>, duration: string }) {
     const [percentagePlayed, setPercentagePlayed] = useState(0);
-
+    const [currentTime, setCurrentTime] = useState(0);
 
     const handleTimeUpdate = useCallback(() => {
         if (audioRef.current) {
@@ -11,6 +12,7 @@ export default function ProgessBar({ audioRef }: { audioRef: RefObject<HTMLAudio
 
             if (duration > 0) {
                 const percentage = Math.floor((currentTime / duration) * 100);
+                setCurrentTime(currentTime)
                 setPercentagePlayed(percentage);
             }
         }
@@ -29,11 +31,16 @@ export default function ProgessBar({ audioRef }: { audioRef: RefObject<HTMLAudio
     }, [audioRef, handleTimeUpdate]);
 
     return (
-        <div className="w-full bg-gray-300 h-2 rounded">
+        <div className="w-full bg-gray-300 h-1 rounded">
             <div
                 className="bg-green-500 h-full rounded"
                 style={{ width: `${percentagePlayed}%` }}
             />
+            <div className='mt-1 flex items-center justify-between'>
+                <p className='text-sm'>{formatTime(currentTime)}</p>
+                <p className='text-sm'>{duration}</p>
+
+            </div>
         </div>
     )
 }
