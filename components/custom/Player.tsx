@@ -1,12 +1,60 @@
+import { useAudioContext } from "@/context/audioListContext";
 import { useCurrentSongContext } from "@/context/CurrentSongContext";
 import { useSongStatusContext } from "@/context/CurrentSongStatus";
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import ProgessBar from "./ProgessBar";
 
 export default function Player() {
-    const { currentSong } = useCurrentSongContext();
+    const { currentSong, setCurrentSong } = useCurrentSongContext();
     const { isPlaying, setIsPlaying } = useSongStatusContext()
+    const { songs } = useAudioContext()
     const audioRef = useRef<HTMLAudioElement>(null)
+
+
+    const setNextSong = useCallback(() => {
+
+        if (currentSong) {
+            let index = 0;
+            for (let x = 0; x < songs.length; x++) {
+                if (songs[x].name === currentSong.name) {
+                    index = x;
+                    break;
+                }
+            }
+
+            if (index !== songs.length - 1) {
+                setCurrentSong(songs[index + 1])
+                setIsPlaying(true)
+
+            } else {
+                setCurrentSong(songs[0])
+                setIsPlaying(true)
+
+            }
+        }
+    }, [currentSong, setCurrentSong, songs, setIsPlaying])
+
+    function setPreviousSong() {
+        if (currentSong) {
+            let index = 0;
+            for (let x = 0; x < songs.length; x++) {
+                if (songs[x].name === currentSong.name) {
+                    index = x;
+                    break;
+                }
+            }
+
+            if (index !== 0) {
+                setCurrentSong(songs[index - 1])
+                setIsPlaying(true)
+
+            } else {
+                setCurrentSong(songs[songs.length - 1])
+                setIsPlaying(true)
+            }
+        }
+    }
 
     useEffect(() => {
         if (audioRef.current && currentSong) {
@@ -28,6 +76,22 @@ export default function Player() {
             }
         }
     }, [isPlaying, currentSong])
+
+
+    useEffect(() => {
+        let audioCurrent = audioRef.current;
+        const handleEndSong = () => {
+            setNextSong()
+        }
+        audioCurrent?.addEventListener("ended", handleEndSong)
+
+        return () => {
+            audioCurrent?.addEventListener("ended", handleEndSong)
+        }
+
+    }, [setNextSong])
+
+
     return (
         <>
             {currentSong && (
@@ -37,9 +101,9 @@ export default function Player() {
                         <p className="font-semibold text-green-500">{currentSong.name}</p>
                         <p className="text-sm font-light">{currentSong.artist}</p>
                     </div>
-                    <div className="flex justify-center">
+                    <div className="flex justify-center flex-col items-center space-y-3">
                         <div className="flex items-center space-x-4">
-                            <button>
+                            <button onClick={setPreviousSong}>
                                 <SkipBack className="w-5 h-5" />
                             </button>
                             {isPlaying ? <button onClick={() => {
@@ -51,9 +115,12 @@ export default function Player() {
                             }}>
                                 <Play className="w-5 h-5" /></button>}
 
-                            <button>
+                            <button onClick={setNextSong}>
                                 <SkipForward className="w-5 h-5" />
                             </button>
+                        </div>
+                        <div className="w-96">
+                            <ProgessBar audioRef={audioRef} />
                         </div>
                     </div>
                 </div>

@@ -53,7 +53,7 @@ export default function UploadAudio() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Upload className="w-61 h-6 text-white" />
+                <Upload className="w-61 h-6 text-white cursor-pointer" />
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
